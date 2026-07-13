@@ -1,0 +1,18 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Task {
+  id: ID!
+  title: String!
+  description: String
+  status: String
+  tags: [String]
+  created_at: String
+  assigned_user: String
+  project_id: String
+}
+
+type Query {
+  helloTasks: [Task!]!
+}
