@@ -3,14 +3,14 @@
 # ------------------------------------------------------
 
 type Task {
-  id: ID!
+  id: String!
   title: String!
-  description: String
-  status: String
-  tags: [String]
-  created_at: String
-  assigned_user: String
-  project_id: String
+  description: String!
+  status: String!
+  tags: [String!]!
+  created_at: String!
+  assigned_user: String!
+  project_id: String!
 }
 
 type Query {
