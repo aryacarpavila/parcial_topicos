@@ -36,11 +36,7 @@ function renderTags() {
   });
 }
 
-// =====================
-// LIVE DATE PREVIEW
-// =====================
-const datePreview = document.getElementById('previewDate');
-datePreview.textContent = new Date().toLocaleString();
+
 
 // =====================
 // FORM SUBMIT
