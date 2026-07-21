@@ -3,6 +3,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TasksResolver } from './tasks.resolver';
+import { TaskService } from './task.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -13,6 +16,13 @@ import { TasksResolver } from './tasks.resolver';
       introspection: true, 
     }),
   ],
-  providers: [TasksResolver],
+  providers: [
+    TasksResolver,
+    TaskService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}

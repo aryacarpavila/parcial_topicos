@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>Task Template</h1>
+            <a href="http://localhost:3000/graphql" class="btn-backend" target="_blank">ver backend</a>
+        </header>
+        
+        <main>
+            <section class="glass-panel add-task-section">
+                <h2>Create New Task</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" required placeholder="e.g. Implement Auth">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" required placeholder="Details about the task..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tags">Tags (comma separated)</label>
+                            <input type="text" id="tags" placeholder="backend, api">
+                        </div>
+                        <div class="form-group">
+                            <label for="assignedUser">Assigned User</label>
+                            <input type="text" id="assignedUser" required placeholder="User ID or Name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectId">Project</label>
+                        <input type="text" id="projectId" required placeholder="Project Name">
+                    </div>
+                    <button type="submit" class="btn-primary">Create Task</button>
+                </form>
+            </section>
+            
+            <section class="tasks-section">
+                <h2>Your Tasks</h2>
+                <div id="tasksContainer" class="tasks-grid">
+                    <!-- Tasks will be injected here via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

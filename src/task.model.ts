@@ -1,4 +1,19 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, registerEnumType } from '@nestjs/graphql';
+
+/**
+ * TaskStatus enum representing the current state of a task.
+ */
+export enum TaskStatus {
+  BACKLOG = 'backlog',
+  TO_DO = 'to_do',
+  IN_PROGRESS = 'in_progress',
+  DONE = 'done',
+}
+
+registerEnumType(TaskStatus, {
+  name: 'TaskStatus',
+  description: 'The current status of the task',
+});
 
 /**
  * Task model representing the GraphQL type for a task.
@@ -14,8 +29,8 @@ export class Task {
   @Field()
   description!: string;
 
-  @Field()
-  status!: string;
+  @Field(() => TaskStatus)
+  status!: TaskStatus;
 
   @Field(() => [String])
   tags!: string[];
