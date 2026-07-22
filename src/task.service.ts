@@ -79,4 +79,17 @@ export class TaskService {
 
     return task;
   }
+
+  /**
+   * Deletes a task by its ID.
+   * @param id The unique identifier of the task to delete.
+   * @returns The deleted task.
+   * @throws NotFoundException When no task exists with the provided ID.
+   */
+  remove(id: string): Task {
+    this.logger.log(`Deleting task with id: ${id}`);
+    const task = this.findOne(id);
+    this.tasks = this.tasks.filter((item) => item.task_id !== id);
+    return task;
+  }
 }
