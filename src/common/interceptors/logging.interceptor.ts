@@ -1,7 +1,14 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+  Logger,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { GraphQLResolveInfo } from 'graphql';
 
 /**
  * Interceptor to log incoming GraphQL requests and their processing time.
@@ -18,10 +25,10 @@ export class LoggingInterceptor implements NestInterceptor {
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = GqlExecutionContext.create(context);
-    const info = ctx.getInfo();
+    const info = ctx.getInfo<GraphQLResolveInfo | undefined>();
     // Some endpoints like REST might not have info
-    const parentType = info ? info.parentType.name : 'Unknown';
-    const fieldName = info ? info.fieldName : 'Unknown';
+    const parentType = info?.parentType?.name ?? 'Unknown';
+    const fieldName = info?.fieldName ?? 'Unknown';
     const action = `${parentType} -> ${fieldName}`;
 
     this.logger.log(`Request started: ${action}`);
@@ -30,7 +37,11 @@ export class LoggingInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        tap(() => this.logger.log(`Request finished: ${action} - ${Date.now() - now}ms`)),
+        tap(() =>
+          this.logger.log(
+            `Request finished: ${action} - ${Date.now() - now}ms`,
+          ),
+        ),
       );
   }
 }

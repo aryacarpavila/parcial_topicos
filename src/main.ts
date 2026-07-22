@@ -6,13 +6,15 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+
   // Servir frontend estático
   app.useStaticAssets(join(process.cwd(), 'public'));
 
   await app.listen(process.env.PORT ?? 3000);
-  
+
   // Abre el navegador a la interfaz UI (raíz)
   exec('cmd /c start http://localhost:3000/');
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Error during bootstrap', err);
+});

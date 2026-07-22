@@ -1,4 +1,11 @@
-import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { Task } from './task.model';
 import { TaskService } from './task.service';
 import { CreateTaskInput } from './dto/create-task.input';
@@ -59,4 +66,4 @@ export class TasksResolver {
   resolveId(@Parent() task: Task): string {
     return task.task_id;
   }
-}
+}

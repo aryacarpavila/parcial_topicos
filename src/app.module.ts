@@ -12,8 +12,8 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: true,     
-      introspection: true, 
+      playground: true,
+      introspection: true,
     }),
   ],
   providers: [

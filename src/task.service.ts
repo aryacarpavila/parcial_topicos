@@ -2,7 +2,6 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
-import { randomUUID } from 'crypto';
 
 /**
  * Service to manage tasks operations.
@@ -66,13 +65,17 @@ export class TaskService {
   update(updateTaskInput: UpdateTaskInput): Task {
     this.logger.log(`Updating task with id: ${updateTaskInput.id}`);
     const task = this.findOne(updateTaskInput.id);
-    
+
     if (updateTaskInput.title !== undefined) task.title = updateTaskInput.title;
-    if (updateTaskInput.description !== undefined) task.description = updateTaskInput.description;
-    if (updateTaskInput.status !== undefined) task.status = updateTaskInput.status;
+    if (updateTaskInput.description !== undefined)
+      task.description = updateTaskInput.description;
+    if (updateTaskInput.status !== undefined)
+      task.status = updateTaskInput.status;
     if (updateTaskInput.tags !== undefined) task.tags = updateTaskInput.tags;
-    if (updateTaskInput.assigned_user !== undefined) task.assigned_user = updateTaskInput.assigned_user;
-    if (updateTaskInput.project_id !== undefined) task.project_id = updateTaskInput.project_id;
+    if (updateTaskInput.assigned_user !== undefined)
+      task.assigned_user = updateTaskInput.assigned_user;
+    if (updateTaskInput.project_id !== undefined)
+      task.project_id = updateTaskInput.project_id;
 
     return task;
   }
