@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { TaskStatus } from '../task.model';
 
 /**
  * Input type for creating a new task.
@@ -10,6 +11,9 @@ export class CreateTaskInput {
 
   @Field()
   description!: string;
+
+  @Field(() => TaskStatus, { nullable: true })
+  status?: TaskStatus;
 
   @Field(() => [String], { nullable: true })
   tags?: string[];

@@ -47,7 +47,7 @@ export class TaskService {
       task_id: shortId,
       title: createTaskInput.title,
       description: createTaskInput.description,
-      status: TaskStatus.BACKLOG,
+      status: createTaskInput.status ?? TaskStatus.BACKLOG,
       tags: createTaskInput.tags || [],
       created_at: new Date().toISOString(),
       assigned_user: createTaskInput.assigned_user,

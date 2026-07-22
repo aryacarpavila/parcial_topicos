@@ -1,5 +1,12 @@
 const API_URL = '/graphql';
 let tags = [];
+let tasks = [];
+let editingTaskId = null;
+
+const taskForm = document.getElementById('taskForm');
+const formTitle = document.getElementById('formTitle');
+const submitButton = document.getElementById('submitButton');
+const cancelEditButton = document.getElementById('cancelEditButton');
 
 // =====================
 // TAG MANAGEMENT
@@ -41,52 +48,113 @@ function renderTags() {
 // =====================
 // FORM SUBMIT
 // =====================
-document.getElementById('taskForm').addEventListener('submit', async (e) => {
+taskForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const title         = document.getElementById('title').value.trim();
   const description   = document.getElementById('description').value.trim();
+  const status        = document.getElementById('status').value;
   const assigned_user = document.getElementById('assignedUser').value.trim();
   const project_id    = document.getElementById('projectId').value.trim();
 
-  const query = `
-    mutation CreateTask($input: CreateTaskInput!) {
-      createTask(createTaskInput: $input) {
-        id
-        title
-        description
-        status
-        tags
-        created_at
-        assigned_user
-        project_id
+  const isEditing = editingTaskId !== null;
+  const query = isEditing
+    ? `
+      mutation UpdateTask($input: UpdateTaskInput!) {
+        updateTask(updateTaskInput: $input) {
+          id
+          title
+          description
+          status
+          tags
+          created_at
+          assigned_user
+          project_id
+        }
       }
-    }
-  `;
+    `
+    : `
+      mutation CreateTask($input: CreateTaskInput!) {
+        createTask(createTaskInput: $input) {
+          id
+          title
+          description
+          status
+          tags
+          created_at
+          assigned_user
+          project_id
+        }
+      }
+    `;
 
   const variables = {
-    input: { title, description, tags: [...tags], assigned_user, project_id }
+    input: {
+      ...(isEditing ? { id: editingTaskId } : {}),
+      title,
+      description,
+      status,
+      tags: [...tags],
+      assigned_user,
+      project_id
+    }
   };
 
   try {
-    const res = await fetch(API_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ query, variables })
-    });
-    const { data, errors } = await res.json();
-    if (errors) throw new Error(errors[0].message);
-
-    // Reset form
-    document.getElementById('taskForm').reset();
-    tags = [];
-    renderTags();
-    fetchTasks();
-
+    await executeGraphQL(query, variables);
+    resetForm();
+    await fetchTasks();
   } catch (err) {
-    alert('Error creating task: ' + err.message);
+    const action = isEditing ? 'updating' : 'creating';
+    alert(`Error ${action} task: ${err.message}`);
   }
 });
+
+cancelEditButton.addEventListener('click', resetForm);
+
+function resetForm() {
+  editingTaskId = null;
+  taskForm.reset();
+  tags = [];
+  renderTags();
+  formTitle.textContent = 'Create New Task';
+  submitButton.textContent = 'Create Task';
+  cancelEditButton.hidden = true;
+}
+
+function startEditTask(id) {
+  const task = tasks.find(item => item.id === id);
+  if (!task) return;
+
+  editingTaskId = task.id;
+  document.getElementById('title').value = task.title;
+  document.getElementById('description').value = task.description;
+  document.getElementById('status').value = task.status;
+  document.getElementById('assignedUser').value = task.assigned_user;
+  document.getElementById('projectId').value = task.project_id;
+  tags = [...task.tags];
+  renderTags();
+
+  formTitle.textContent = 'Edit Task';
+  submitButton.textContent = 'Save Changes';
+  cancelEditButton.hidden = false;
+  document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function executeGraphQL(query, variables = {}) {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables })
+  });
+  const result = await response.json();
+
+  if (!response.ok || result.errors) {
+    throw new Error(result.errors?.[0]?.message || 'GraphQL request failed');
+  }
+
+  return result.data;
+}
 
 // =====================
 // FETCH ALL TASKS
@@ -108,13 +176,9 @@ async function fetchTasks() {
   `;
 
   try {
-    const res = await fetch(API_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ query })
-    });
-    const { data } = await res.json();
-    renderCards(data.tasks);
+    const data = await executeGraphQL(query);
+    tasks = data.tasks;
+    renderCards(tasks);
   } catch (err) {
     console.error('Error fetching tasks', err);
   }
@@ -132,11 +196,8 @@ async function updateStatus(id, newStatus) {
   const variables = { input: { id, status: newStatus } };
 
   try {
-    await fetch(API_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ query, variables })
-    });
+    await executeGraphQL(query, variables);
+    await fetchTasks();
   } catch (err) {
     alert('Error updating status: ' + err.message);
     fetchTasks();
@@ -147,7 +208,7 @@ async function updateStatus(id, newStatus) {
 // RENDER TASK CARDS
 // =====================
 function statusLabel(status) {
-  const map = { backlog: 'Backlog', to_do: 'To Do', in_progress: 'In Progress', done: 'Done' };
+  const map = { BACKLOG: 'Backlog', TO_DO: 'To Do', IN_PROGRESS: 'In Progress', DONE: 'Done' };
   return map[status] || status;
 }
 
@@ -171,16 +232,19 @@ function renderCards(tasks) {
     card.innerHTML = `
       <div class="card-header">
         <div class="card-title">${task.title}</div>
-        <div class="card-id">#${task.id}</div>
+        <div class="card-actions">
+          <button type="button" class="btn-edit" onclick="startEditTask('${task.id}')">Edit</button>
+          <div class="card-id">#${task.id}</div>
+        </div>
       </div>
       <div class="card-desc">${task.description}</div>
       <div class="card-tags">${tagsHtml}</div>
       <div class="card-footer">
         <select class="card-status-select" onchange="updateStatus('${task.id}', this.value)">
-          <option value="backlog"     ${task.status==='backlog'     ?'selected':''}>Backlog</option>
-          <option value="to_do"       ${task.status==='to_do'       ?'selected':''}>To Do</option>
-          <option value="in_progress" ${task.status==='in_progress' ?'selected':''}>In Progress</option>
-          <option value="done"        ${task.status==='done'        ?'selected':''}>Done</option>
+          <option value="BACKLOG"     ${task.status==='BACKLOG'     ?'selected':''}>Backlog</option>
+          <option value="TO_DO"       ${task.status==='TO_DO'       ?'selected':''}>To Do</option>
+          <option value="IN_PROGRESS" ${task.status==='IN_PROGRESS' ?'selected':''}>In Progress</option>
+          <option value="DONE"        ${task.status==='DONE'        ?'selected':''}>Done</option>
         </select>
         <div class="card-meta">
           <span class="card-user">👤 ${task.assigned_user}</span>

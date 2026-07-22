@@ -292,10 +292,15 @@ textarea {
 }
 .tag-chip button:hover { opacity: 1; }
 
-/* Submit button */
-.btn-submit {
+/* Form actions */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
   margin-top: 1rem;
-  width: 100%;
+}
+
+.btn-submit {
+  flex: 1;
   background: var(--primary);
   color: #fff;
   border: none;
@@ -313,6 +318,28 @@ textarea {
   box-shadow: 0 8px 25px var(--primary-glow);
 }
 .btn-submit:active { transform: translateY(0); }
+
+.btn-cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1.5rem;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-cancel:hover {
+  color: var(--text);
+  border-color: var(--primary-light);
+}
+
+.btn-cancel[hidden] {
+  display: none;
+}
 
 /* =====================
    TASKS SECTION
@@ -377,6 +404,30 @@ textarea {
   border-radius: 4px;
   letter-spacing: 0.05em;
   font-family: monospace;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background: transparent;
+  color: #d8b4fe;
+  border: 1px solid var(--tag-border);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-edit:hover {
+  background: var(--tag-bg);
+  border-color: var(--primary-light);
 }
 
 .card-desc {
