@@ -3,6 +3,7 @@ import {
   Query,
   Mutation,
   Args,
+  ID,
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
@@ -55,6 +56,16 @@ export class TasksResolver {
   @Mutation(() => Task)
   updateTask(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput): Task {
     return this.taskService.update(updateTaskInput);
+  }
+
+  /**
+   * Deletes an existing task.
+   * @param id The ID of the task to delete.
+   * @returns The deleted task.
+   */
+  @Mutation(() => Task)
+  deleteTask(@Args('id', { type: () => ID }) id: string): Task {
+    return this.taskService.remove(id);
   }
 
   /**

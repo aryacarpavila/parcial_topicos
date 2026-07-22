@@ -32,7 +32,7 @@ describe('Task GraphQL API (e2e)', () => {
     await app.init();
   });
 
-  it('creates and updates a task', async () => {
+  it('creates, updates, and deletes a task', async () => {
     const createResponse = await request(app.getHttpServer())
       .post('/graphql')
       .send({
@@ -114,6 +114,62 @@ describe('Task GraphQL API (e2e)', () => {
       assigned_user: 'arya',
       project_id: 'taller-3-final',
     });
+
+    const deleteResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .send({
+        query: `
+          mutation DeleteTask($id: ID!) {
+            deleteTask(id: $id) {
+              id
+              title
+            }
+          }
+        `,
+        variables: { id: createdTask.id },
+      })
+      .expect(200);
+
+    const deleteBody = deleteResponse.body as GraphQLResponse<{
+      deleteTask: Pick<TaskPayload, 'id' | 'title'>;
+    }>;
+    expect(deleteBody.errors).toBeUndefined();
+    expect(deleteBody.data.deleteTask).toEqual({
+      id: createdTask.id,
+      title: 'Finish editing',
+    });
+
+    const listResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .send({ query: '{ tasks { id } }' })
+      .expect(200);
+
+    const listBody = listResponse.body as GraphQLResponse<{
+      tasks: Array<Pick<TaskPayload, 'id'>>;
+    }>;
+    expect(listBody.errors).toBeUndefined();
+    expect(listBody.data.tasks).toEqual([]);
+  });
+
+  it('returns an error when deleting an unknown task', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/graphql')
+      .send({
+        query: `
+          mutation DeleteTask($id: ID!) {
+            deleteTask(id: $id) { id }
+          }
+        `,
+        variables: { id: 'UNKNOWN' },
+      })
+      .expect(200);
+
+    const body = response.body as {
+      data: null;
+      errors: Array<{ message: string }>;
+    };
+    expect(body.data).toBeNull();
+    expect(body.errors[0].message).toContain('Task with id UNKNOWN not found');
   });
 
   afterEach(async () => {

@@ -205,6 +205,32 @@ async function updateStatus(id, newStatus) {
 }
 
 // =====================
+// DELETE TASK
+// =====================
+async function deleteTask(id) {
+  const task = tasks.find(item => item.id === id);
+  const taskName = task?.title || id;
+
+  if (!window.confirm(`Delete task "${taskName}"? This action cannot be undone.`)) {
+    return;
+  }
+
+  const query = `
+    mutation DeleteTask($id: ID!) {
+      deleteTask(id: $id) { id }
+    }
+  `;
+
+  try {
+    await executeGraphQL(query, { id });
+    if (editingTaskId === id) resetForm();
+    await fetchTasks();
+  } catch (err) {
+    alert('Error deleting task: ' + err.message);
+  }
+}
+
+// =====================
 // RENDER TASK CARDS
 // =====================
 function statusLabel(status) {
@@ -234,6 +260,7 @@ function renderCards(tasks) {
         <div class="card-title">${task.title}</div>
         <div class="card-actions">
           <button type="button" class="btn-edit" onclick="startEditTask('${task.id}')">Edit</button>
+          <button type="button" class="btn-delete" onclick="deleteTask('${task.id}')">Delete</button>
           <div class="card-id">#${task.id}</div>
         </div>
       </div>

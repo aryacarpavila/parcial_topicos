@@ -430,6 +430,24 @@ textarea {
   border-color: var(--primary-light);
 }
 
+.btn-delete {
+  background: transparent;
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: #ef4444;
+}
+
 .card-desc {
   font-size: 0.85rem;
   color: var(--text-muted);
