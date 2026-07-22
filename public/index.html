@@ -32,7 +32,7 @@
 
       <!-- Right panel: form -->
       <div class="form-panel">
-        <h2 class="form-title">Create New Task</h2>
+        <h2 class="form-title" id="formTitle">Create New Task</h2>
 
         <form id="taskForm">
           <!-- Title -->
@@ -52,10 +52,10 @@
             <label for="status">Current Status</label>
             <div class="select-wrapper">
               <select id="status">
-                <option value="backlog">Backlog</option>
-                <option value="to_do">To Do</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
+                <option value="BACKLOG">Backlog</option>
+                <option value="TO_DO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="DONE">Done</option>
               </select>
               <span class="select-arrow">▾</span>
             </div>
@@ -82,7 +82,10 @@
             <input type="text" id="projectId" required placeholder="e.g. parcial_topicos">
           </div>
 
-          <button type="submit" class="btn-submit">Create Task</button>
+          <div class="form-actions">
+            <button type="submit" class="btn-submit" id="submitButton">Create Task</button>
+            <button type="button" class="btn-cancel" id="cancelEditButton" hidden>Cancel Edit</button>
+          </div>
         </form>
       </div>
     </section>

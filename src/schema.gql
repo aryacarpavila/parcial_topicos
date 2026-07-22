@@ -34,6 +34,7 @@ type Mutation {
 input CreateTaskInput {
   title: String!
   description: String!
+  status: TaskStatus
   tags: [String!]
   assigned_user: String!
   project_id: String!
