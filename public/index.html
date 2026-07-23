@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Main page wrapper -->
+  <div class="page-wrapper">
+
+    <!-- ===== FORM SECTION ===== -->
+    <section class="form-section">
+
+      <!-- Left panel: info -->
+      <div class="info-panel">
+        <span class="star star-top">✦</span>
+        <div class="info-content">
+          <h1 class="info-title">Task<br>Template</h1>
+          <p class="info-desc">
+            Create and manage your development tasks. Fill in each field carefully.
+          </p>
+        </div>
+        <div class="info-footer">
+          <a href="http://localhost:3000/graphql" target="_blank" class="btn-backend">ver backend ↗</a>
+        </div>
+        <span class="star star-bottom">✦</span>
+      </div>
+
+      <!-- Right panel: form -->
+      <div class="form-panel">
+        <h2 class="form-title" id="formTitle">Create New Task</h2>
+
+        <form id="taskForm">
+          <!-- Title -->
+          <div class="field-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" required placeholder="Task title...">
+          </div>
+
+          <!-- Description -->
+          <div class="field-group">
+            <label for="description">Description</label>
+            <textarea id="description" required placeholder="Describe the task in detail..."></textarea>
+          </div>
+
+          <!-- Status -->
+          <div class="field-group">
+            <label for="status">Current Status</label>
+            <div class="select-wrapper">
+              <select id="status">
+                <option value="BACKLOG">Backlog</option>
+                <option value="TO_DO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="DONE">Done</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="field-group">
+            <label for="tagInput">Tags</label>
+            <div class="tag-input-wrapper">
+              <div class="tags-container" id="tagsContainer"></div>
+              <input type="text" id="tagInput" placeholder="Add a tag and press Enter...">
+            </div>
+          </div>
+
+          <!-- Assigned user -->
+          <div class="field-group">
+            <label for="assignedUser">Assigned User</label>
+            <input type="text" id="assignedUser" required placeholder="e.g. arya, john_doe">
+          </div>
+
+          <!-- Project -->
+          <div class="field-group">
+            <label for="projectId">Project</label>
+            <input type="text" id="projectId" required placeholder="e.g. parcial_topicos">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-submit" id="submitButton">Create Task</button>
+            <button type="button" class="btn-cancel" id="cancelEditButton" hidden>Cancel Edit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== TASKS SECTION ===== -->
+    <section class="tasks-section">
+      <h2 class="tasks-heading">Your Tasks</h2>
+      <div id="tasksContainer" class="tasks-grid"></div>
+      <p id="emptyMsg" class="empty-msg">No tasks yet. Create your first one above!</p>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
