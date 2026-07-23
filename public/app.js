@@ -51,6 +51,13 @@ function renderTags() {
 taskForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  const tagInputEl    = document.getElementById('tagInput');
+  const pendingTag    = tagInputEl.value.trim();
+  if (pendingTag) {
+    addTag(pendingTag);
+    tagInputEl.value = '';
+  }
+
   const title         = document.getElementById('title').value.trim();
   const description   = document.getElementById('description').value.trim();
   const status        = document.getElementById('status').value;
